@@ -25,14 +25,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> run() async {
-    fixSizedStorage = FixSizedStorage('example');
-    await fixSizedStorage.init();
-
     Uint8List bytes = Uint8List(300 * 300 * 4);
 
     int key = 0;
     bool set = false;
     while (true) {
+      fixSizedStorage = FixSizedStorage.fromId('example');
+      await fixSizedStorage.init();
+
       var t1 = DateTime.now().microsecondsSinceEpoch;
 
       String keyStr = '$key';

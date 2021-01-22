@@ -12,6 +12,26 @@ import 'package:path_provider/path_provider.dart';
 /// 
 /// It may delete the cached data when the space is insufficient.
 class FixSizedStorage {
+  /// Create a FixSizedStorage instance with [id] and [capacity] or get a 
+  /// FixSizedStorage instance by [id] and reset the [capacity] of it.
+  ///
+  /// If the [id] is not stored in the [_instances]. It will create a new 
+  /// FixSizedStorage.
+  /// 
+  /// Only storage created by [FixSizedStorage.fromId] will be added to 
+  /// [_instances].
+  factory FixSizedStorage.fromId(String id, {int capacity = 5 * 1024 * 1024 * 1024}) {
+    if (_instances.containsKey(id)) {
+      FixSizedStorage instance = _instances[id];
+      instance.recapacity(capacity);
+      return instance;
+    }
+
+    FixSizedStorage fixSizedStorage = FixSizedStorage(id, capacity: capacity);
+    _instances[id] = fixSizedStorage;
+    return fixSizedStorage;
+  }
+
   /// Create a FixSizedStorage instance with [id] and [capacity].
   /// 
   /// [id] is the unique identifier of the storage.
@@ -99,6 +119,14 @@ class FixSizedStorage {
       await _safeDelete(value);
       return false;
     }
+  }
+
+  /// Set a new [_capacity] for this storage.
+  ///
+  /// If the [_capacity] is less than [_size] after [recapacity]. Existing 
+  /// values will not be removed, but new key-values cannot be seted.
+  void recapacity(int capacity) {
+    _capacity = capacity;
   }
 
   /// Restore cache from disk to memory.
@@ -198,6 +226,8 @@ class FixSizedStorage {
       await fb.delete();
     }
   }
+
+  static HashMap<String, FixSizedStorage> _instances = HashMap<String, FixSizedStorage>();
 
   /// The root directory of this storage.
   ///
