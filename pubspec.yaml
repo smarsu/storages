@@ -1,6 +1,6 @@
 name: storages
 description: A wrapper of disk storage allows people to cache files to disk more securely without worrying about taking up disk space unlimitedly.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/smarsu/storages.git
 
 environment:
